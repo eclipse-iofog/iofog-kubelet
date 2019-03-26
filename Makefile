@@ -1,7 +1,10 @@
 SHELL := /bin/bash
-IMPORT_PATH := github.com/iofog/iofog-kubelet
-DOCKER_IMAGE := iofog-kubelet
-exec := $(DOCKER_IMAGE)
+
+# Project variables
+PACKAGE = github.com/iofog/iofog-kubelet
+BINARY_NAME = iofog-kubelet
+IMAGE = iofog/iofog-kubelet
+TAG ?= dev
 github_repo := iofog-kubelet/iofog-kubelet
 binary := iofog-kubelet
 build_tags := "netgo osusergo $(VK_BUILD_TAGS)"
@@ -19,12 +22,12 @@ all: test build
 # safebuild builds inside a docker container with no clingons from your $GOPATH
 safebuild:
 	@echo "Building..."
-	$Q docker build --build-arg BUILD_TAGS=$(build_tags) -t $(DOCKER_IMAGE):$(VERSION) .
+	$Q docker build --build-arg BUILD_TAGS=$(build_tags) -t $(IMAGE):$(VERSION) -f build/Dockerfile .
 
 .PHONY: build
 build: authors
 	@echo "Building..."
-	$Q CGO_ENABLED=0 go build -a --tags $(build_tags) -ldflags '-extldflags "-static"' -o bin/$(binary) $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)
+	$Q CGO_ENABLED=0 go build -a --tags $(build_tags) -ldflags '-extldflags "-static"' -o bin/$(binary) $(if $V,-v) $(VERSION_FLAGS) $(PACKAGE)
 
 .PHONY: tags
 tags:
@@ -39,22 +42,26 @@ release: build $(GOPATH)/bin/goreleaser
 ### Code not in the repository root? Another binary? Add to the path like this.
 # .PHONY: otherbin
 # otherbin: .GOPATH/.ok
-#   $Q go install $(if $V,-v) $(VERSION_FLAGS) $(IMPORT_PATH)/cmd/otherbin
+#   $Q go install $(if $V,-v) $(VERSION_FLAGS) $(PACKAGE)/cmd/otherbin
 
 ##### ^^^^^^ EDIT ABOVE ^^^^^^ #####
 
 ##### =====> Utility targets <===== #####
 
-.PHONY: clean test list cover format docker deps
+.PHONY: clean test list cover format docker-build docker-push deps
 
 deps: setup
 	@echo "Ensuring Dependencies..."
 	$Q go env
 	$Q dep ensure
 
-docker:
+docker-build:
 	@echo "Docker Build..."
-	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(DOCKER_IMAGE) .
+	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(IMAGE):$(TAG) -f build/Dockerfile .
+
+docker-push: ## Pushes the docker image to docker hub
+	@echo $(DOCKER_PASS) | docker login -u $(DOCKER_USER) --password-stdin
+	docker push $(IMAGE):$(TAG)
 
 clean:
 	@echo "Clean..."
