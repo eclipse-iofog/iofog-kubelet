@@ -1,3 +1,16 @@
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package vkubelet
 
 import (
@@ -19,7 +32,7 @@ var (
 	vkVersion = strings.Join([]string{"v1.13.1", "vk", version.Version}, "-")
 )
 
-// registerNode registers this virtual node with the Kubernetes API.
+// registerNode registers the virtual node with the Kubernetes API.
 func (s *Server) registerNode(ctx context.Context) error {
 	ctx, span := trace.StartSpan(ctx, "registerNode")
 	defer span.End()
@@ -98,8 +111,9 @@ func (s *Server) updateNode(ctx context.Context) {
 	n.Status.Conditions = s.provider.NodeConditions(ctx)
 
 	capacity := s.provider.Capacity(ctx)
+	allocatable := s.provider.Allocatable(ctx)
 	n.Status.Capacity = capacity
-	n.Status.Allocatable = capacity
+	n.Status.Allocatable = allocatable
 
 	n.Status.Addresses = s.provider.NodeAddresses(ctx)
 
@@ -109,6 +123,22 @@ func (s *Server) updateNode(ctx context.Context) {
 		span.SetStatus(ocstatus.FromError(err))
 		return
 	}
+}
+
+// deleteNode deletes the virtual node with the Kubernetes API.
+func (s *Server) DeleteNode(ctx context.Context) error {
+	ctx, span := trace.StartSpan(ctx, "deleteNode")
+	defer span.End()
+
+	deleteOptions := metav1.DeleteOptions{}
+	if err := s.k8sClient.CoreV1().Nodes().Delete(s.nodeName, &deleteOptions); err != nil && !errors.IsNotFound(err) {
+		span.SetStatus(ocstatus.FromError(err))
+		return err
+	}
+
+	log.G(ctx).Info("Deleted node")
+
+	return nil
 }
 
 type taintsStringer []corev1.Taint

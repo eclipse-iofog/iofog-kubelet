@@ -189,7 +189,25 @@ func (p *BrokerProvider) Capacity(ctx context.Context) v1.ResourceList {
 	err := p.client.DoGetRequest(urlPathStr, &resourceList)
 
 	if err != nil {
-		panic(err)
+		log.Println("error ", err)
+		return nil
+	}
+
+	return resourceList
+}
+
+// Allocatable returns a resource list containing the allocatable limits
+func (p *BrokerProvider) Allocatable(ctx context.Context) v1.ResourceList {
+	urlPathStr := fmt.Sprintf(
+		"/api/v3/k8s/allocatable?nodeName=%s",
+		url.QueryEscape(p.nodeId))
+
+	resourceList := v1.ResourceList{}
+	err := p.client.DoGetRequest(urlPathStr, &resourceList)
+
+	if err != nil {
+		log.Println("error ", err)
+		return nil
 	}
 
 	return resourceList
@@ -205,7 +223,8 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 	err := p.client.DoGetRequest(urlPathStr, &nodeConditions)
 
 	if err != nil {
-		panic(err)
+		log.Println("error ", err)
+		return nil
 	}
 
 	return nodeConditions
@@ -222,7 +241,8 @@ func (p *BrokerProvider) NodeAddresses(ctx context.Context) []v1.NodeAddress {
 	err := p.client.DoGetRequest(urlPathStr, &nodeAddresses)
 
 	if err != nil {
-		panic(err)
+		log.Println("error ", err)
+		return nil
 	}
 
 	return nodeAddresses

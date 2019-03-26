@@ -1,3 +1,16 @@
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package vkubelet
 
 import (
@@ -54,11 +67,11 @@ func NotImplemented(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "501 not implemented", http.StatusNotImplemented)
 }
 
-func AttachFogControllerRoutes(mux ServeMux, startFunc func(nodeId string), stopFunc func(nodeId string)) {
+func AttachFogControllerRoutes(mux ServeMux, startFunc func(nodeId string), stopFunc func(nodeId string, deleteNode bool)) {
 	mux.Handle("/", InstrumentHandler(FogControllerHandler(startFunc, stopFunc)))
 }
 
-func FogControllerHandler(startFunc func(nodeId string), stopFunc func(nodeId string)) http.Handler {
+func FogControllerHandler(startFunc func(nodeId string), stopFunc func(nodeId string, deleteNode bool)) http.Handler {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/node", api.FogControllerHandlerStopFunc(stopFunc)).Queries("uuid", "{uuid}").Methods("DELETE")

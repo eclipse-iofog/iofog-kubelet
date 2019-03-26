@@ -1,3 +1,16 @@
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package providers
 
 import (
@@ -40,6 +53,9 @@ type Provider interface {
 
 	// Capacity returns a resource list with the capacity constraints of the provider.
 	Capacity(context.Context) v1.ResourceList
+
+	// Allocatable returns a resource list with the allocatable constraints of the provider.
+	Allocatable(context.Context) v1.ResourceList
 
 	// NodeConditions returns a list of conditions (Ready, OutOfDisk, etc), which is
 	// polled periodically to update the node status within Kubernetes.

@@ -1,16 +1,15 @@
-// Copyright © 2017 The iofog-kubelet authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
 
 package cmd
 
@@ -94,9 +93,13 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 		}
 
 		ioFogKubelets = make(map[string]*controllertypes.IOFogKubelet)
-		for _, iofog := range iofogNodes {
-			go startKubelet(iofog.UUID)
+		if iofogNodes != nil {
+			for _, iofog := range iofogNodes {
+				go startKubelet(iofog.UUID)
+			}
 		}
+
+		ioFogSyncLoop(rootContext)
 
 		sig := make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
@@ -122,6 +125,7 @@ func startKubelet(nodeId string) {
 
 	nodeContext, nodeContextCancel := context.WithCancel(rootContext)
 	kubelet.NodeContextCancel = nodeContextCancel
+	kubelet.NodeContext = nodeContext
 
 	nodeName := nodeName(nodeId)
 
@@ -187,25 +191,12 @@ func startKubelet(nodeId string) {
 		PodInformer:     podInformer,
 	})
 
-	//go func() {
-	//	apiConfig, err = getAPIConfig(idx, daemonPort)
-	//	if err != nil {
-	//		log.L.WithError(err).Fatal("Error reading API config")
-	//	}
-	//
-	//	var err error
-	//	err = setupHTTPServer(nodeContext, apiConfig, providerInstance)
-	//	if err != nil {
-	//		log.G(nodeContext).Fatal(err)
-	//	}
-	//}()
-
 	if err := kubelet.KubeletInstance.Run(nodeContext); err != nil && errors.Cause(err) != context.Canceled {
 		log.G(nodeContext).Fatal(err)
 	}
 }
 
-func shutdownKubelet(nodeId string) {
+func shutdownKubelet(nodeId string, deleteNode bool) {
 	kubelet, ok := ioFogKubelets[nodeId]
 	if !ok {
 		log.L.Warn("ioFog Kubelet is not running for node ", nodeId)
@@ -213,12 +204,15 @@ func shutdownKubelet(nodeId string) {
 	}
 
 	kubelet.NodeContextCancel()
+	if deleteNode {
+		_ = kubelet.KubeletInstance.DeleteNode(kubelet.NodeContext)
+	}
 	delete(ioFogKubelets, nodeId)
 }
 
 func shutdownAll() {
 	for nodeId := range ioFogKubelets {
-		shutdownKubelet(nodeId)
+		shutdownKubelet(nodeId, false)
 	}
 }
 
@@ -370,22 +364,7 @@ func initConfig() {
 		}
 	}
 
-	client, err := controller.NewHttpClient(controllerToken, controllerUrl)
-	if err != nil {
-		log.G(rootContext).Fatal(err)
-	}
-
-	urlPathStr := "/api/v3/iofog-list"
-	var iofogs controller.IOFogsReponse
-	err = client.DoGetRequest(urlPathStr, &iofogs)
-
-	// if we get a "404 Not Found" then we return nil to indicate that no pod
-	// with this name was found
-	if err != nil {
-		panic(err)
-	}
-
-	iofogNodes = iofogs.Fogs
+	iofogNodes = getIOFogNodes()
 
 	if podSyncWorkers <= 0 {
 		logger.Fatal("The number of pod synchronization workers should not be negative")
@@ -435,6 +414,63 @@ func initConfig() {
 					DefaultSampler: s,
 				},
 			)
+		}
+	}
+}
+
+func getIOFogNodes() []controller.IOFog {
+	client, err := controller.NewHttpClient(controllerToken, controllerUrl)
+	if err != nil {
+		log.G(rootContext).Fatal(err)
+	}
+
+	urlPathStr := "/api/v3/iofog-list"
+	var iofogs controller.IOFogsReponse
+	err = client.DoGetRequest(urlPathStr, &iofogs)
+
+	if err != nil {
+		log.G(rootContext).Warn("unable to get ioFog nodes: ", err)
+		return nil
+	} else {
+		return iofogs.Fogs
+	}
+}
+
+func ioFogSyncLoop(ctx context.Context) {
+	const sleepTime = 5 * time.Second
+
+	t := time.NewTimer(sleepTime)
+	defer t.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-t.C:
+			t.Stop()
+
+			nodes := getIOFogNodes()
+			if nodes != nil {
+				uuids := make(map[string]bool)
+				for _, iofog := range nodes {
+					uuids[iofog.UUID] = true
+					_, ok := ioFogKubelets[iofog.UUID]
+					if ok {
+						continue
+					}
+					go startKubelet(iofog.UUID)
+				}
+
+				for uuid := range ioFogKubelets {
+					_, ok := uuids[uuid]
+					if !ok {
+						shutdownKubelet(uuid, true)
+					}
+				}
+			}
+
+			// restart the timer
+			t.Reset(sleepTime)
 		}
 	}
 }

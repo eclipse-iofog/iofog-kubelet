@@ -1,3 +1,16 @@
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package vkubelet
 
 import (
@@ -26,18 +39,14 @@ func addPodAttributes(ctx context.Context, span trace.Span, pod *corev1.Pod) con
 }
 
 func (s *Server) createOrUpdatePod(ctx context.Context, pod *corev1.Pod, recorder record.EventRecorder) error {
-	// Check if the pod is already known by the provider.
-	// NOTE: Some providers return a non-nil error in their GetPod implementation when the pod is not found while some other don't.
-	// Hence, we ignore the error and just act upon the pod if it is non-nil (meaning that the provider still knows about the pod).
-	if pp, _ := s.provider.GetPod(ctx, pod.Namespace, pod.Name); pp != nil {
-		// The pod has already been created in the provider.
-		// Hence, we return since pod updates are not yet supported.
-		log.G(ctx).Warnf("skipping update of pod %s as pod updates are not supported", pp.Name)
-		return nil
-	}
-
 	ctx, span := trace.StartSpan(ctx, "createOrUpdatePod")
 	defer span.End()
+
+	if pp, _ := s.provider.GetPod(ctx, pod.Namespace, pod.Name); pp != nil {
+		err := s.provider.UpdatePod(ctx, pp)
+		return err
+	}
+
 	addPodAttributes(ctx, span, pod)
 
 	if err := populateEnvironmentVariables(ctx, pod, s.resourceManager, recorder); err != nil {

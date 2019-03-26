@@ -1,6 +1,16 @@
-// Package logrus implements a github.com/iofog/iofog-kubelet/log.Logger using Logrus as a backend
-// You can use this by creating a logrus logger and calling `FromLogrus(entry)`.
-// If you want this to be the default logger for iofog-kubelet, set `log.L` to the value returned by `FromLogrus`
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package logrus
 
 import (

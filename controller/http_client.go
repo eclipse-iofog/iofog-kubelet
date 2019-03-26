@@ -1,10 +1,23 @@
+/*
+ *  *******************************************************************************
+ *  * Copyright (c) 2019 Edgeworx, Inc.
+ *  *
+ *  * This program and the accompanying materials are made available under the
+ *  * terms of the Eclipse Public License v. 2.0 which is available at
+ *  * http://www.eclipse.org/legal/epl-2.0
+ *  *
+ *  * SPDX-License-Identifier: EPL-2.0
+ *  *******************************************************************************
+ *
+ */
+
 package controller
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
-	"github.com/cenkalti/backoff"
 	"github.com/cpuguy83/strongerrors"
 	"io"
 	"io/ioutil"
@@ -64,15 +77,11 @@ func (p *HttpClient) DoRequest(method string, urlPath *url.URL, body []byte, rea
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Authorization", p.controllerToken)
 
-	// issue request
-	retry := backoff.NewExponentialBackOff()
-	retry.MaxElapsedTime = 5 * time.Minute
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*5)
+	request = request.WithContext(ctx)
 
-	var response *http.Response
-	err = backoff.Retry(func() error {
-		response, err = p.client.Do(request)
-		return err
-	}, retry)
+	response, err := p.client.Do(request)
+
 	if err != nil {
 		return nil, err
 	}

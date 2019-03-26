@@ -40,3 +40,5 @@ loganalytics.json
 debug
 
 /.idea
+/.vscode
+.DS_Store
