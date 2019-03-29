@@ -48,18 +48,18 @@ release: build $(GOPATH)/bin/goreleaser
 
 ##### =====> Utility targets <===== #####
 
-.PHONY: clean test list cover format docker-build docker-push deps
+.PHONY: clean test list cover format build-img push-img deps
 
 deps: setup
 	@echo "Ensuring Dependencies..."
 	$Q go env
 	$Q dep ensure
 
-docker-build:
+build-img:
 	@echo "Docker Build..."
 	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(IMAGE):$(TAG) -f build/Dockerfile .
 
-docker-push: ## Pushes the docker image to docker hub
+push-img: ## Pushes the docker image to docker hub
 	@echo $(DOCKER_PASS) | docker login -u $(DOCKER_USER) --password-stdin
 	docker push $(IMAGE):$(TAG)
 
