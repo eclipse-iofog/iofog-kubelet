@@ -19,9 +19,9 @@ import (
 	"time"
 
 	"github.com/cpuguy83/strongerrors/status/ocstatus"
-	pkgerrors "github.com/pkg/errors"
 	"github.com/iofog/iofog-kubelet/log"
 	"github.com/iofog/iofog-kubelet/trace"
+	pkgerrors "github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -75,7 +75,7 @@ func (s *Server) createOrUpdatePod(ctx context.Context, pod *corev1.Pod, recorde
 			"reason":   pod.Status.Reason,
 		})
 
-		_, err := s.k8sClient.CoreV1().Pods(pod.Namespace).UpdateStatus(pod)
+		_, err := s.Client.CoreV1().Pods(pod.Namespace).UpdateStatus(pod)
 		if err != nil {
 			logger.WithError(err).Warn("Failed to update pod status")
 		} else {
@@ -133,7 +133,7 @@ func (s *Server) forceDeletePodResource(ctx context.Context, namespace, name str
 	})
 
 	var grace int64
-	if err := s.k8sClient.CoreV1().Pods(namespace).Delete(name, &metav1.DeleteOptions{GracePeriodSeconds: &grace}); err != nil {
+	if err := s.Client.CoreV1().Pods(namespace).Delete(name, &metav1.DeleteOptions{GracePeriodSeconds: &grace}); err != nil {
 		if errors.IsNotFound(err) {
 			log.G(ctx).Debug("Pod does not exist in Kubernetes, nothing to delete")
 			return nil
@@ -227,7 +227,7 @@ func (s *Server) updatePodStatus(ctx context.Context, pod *corev1.Pod) error {
 		}
 	}
 
-	if _, err := s.k8sClient.CoreV1().Pods(pod.Namespace).UpdateStatus(pod); err != nil {
+	if _, err := s.Client.CoreV1().Pods(pod.Namespace).UpdateStatus(pod); err != nil {
 		span.SetStatus(ocstatus.FromError(err))
 		return pkgerrors.Wrap(err, "error while updating pod status in kubernetes")
 	}

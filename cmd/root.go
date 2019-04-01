@@ -93,13 +93,9 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 		}
 
 		ioFogKubelets = make(map[string]*controllertypes.IOFogKubelet)
-		if iofogNodes != nil {
-			for _, iofog := range iofogNodes {
-				go startKubelet(iofog.UUID)
-			}
+		for _, iofog := range iofogNodes {
+			go startKubelet(iofog.UUID)
 		}
-
-		ioFogSyncLoop(rootContext)
 
 		sig := make(chan os.Signal, 1)
 		signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
@@ -125,7 +121,6 @@ func startKubelet(nodeId string) {
 
 	nodeContext, nodeContextCancel := context.WithCancel(rootContext)
 	kubelet.NodeContextCancel = nodeContextCancel
-	kubelet.NodeContext = nodeContext
 
 	nodeName := nodeName(nodeId)
 

@@ -71,7 +71,7 @@ func (s *Server) registerNode(ctx context.Context) error {
 		},
 	}
 	ctx = addNodeAttributes(ctx, span, node)
-	if _, err := s.k8sClient.CoreV1().Nodes().Create(node); err != nil && !errors.IsAlreadyExists(err) {
+	if _, err := s.Client.CoreV1().Nodes().Create(node); err != nil && !errors.IsAlreadyExists(err) {
 		span.SetStatus(ocstatus.FromError(err))
 		return err
 	}
@@ -87,7 +87,7 @@ func (s *Server) updateNode(ctx context.Context) {
 	defer span.End()
 
 	opts := metav1.GetOptions{}
-	n, err := s.k8sClient.CoreV1().Nodes().Get(s.nodeName, opts)
+	n, err := s.Client.CoreV1().Nodes().Get(s.nodeName, opts)
 	if err != nil && !errors.IsNotFound(err) {
 		log.G(ctx).WithError(err).Error("Failed to retrive node")
 		span.SetStatus(ocstatus.FromError(err))
@@ -117,7 +117,7 @@ func (s *Server) updateNode(ctx context.Context) {
 
 	n.Status.Addresses = s.provider.NodeAddresses(ctx)
 
-	n, err = s.k8sClient.CoreV1().Nodes().UpdateStatus(n)
+	n, err = s.Client.CoreV1().Nodes().UpdateStatus(n)
 	if err != nil {
 		log.G(ctx).WithError(err).Error("Failed to update node")
 		span.SetStatus(ocstatus.FromError(err))
@@ -131,7 +131,7 @@ func (s *Server) DeleteNode(ctx context.Context) error {
 	defer span.End()
 
 	deleteOptions := metav1.DeleteOptions{}
-	if err := s.k8sClient.CoreV1().Nodes().Delete(s.nodeName, &deleteOptions); err != nil && !errors.IsNotFound(err) {
+	if err := s.Client.CoreV1().Nodes().Delete(s.nodeName, &deleteOptions); err != nil && !errors.IsNotFound(err) {
 		span.SetStatus(ocstatus.FromError(err))
 		return err
 	}
