@@ -15,8 +15,8 @@ package register
 
 import (
 	"github.com/cpuguy83/strongerrors"
-	"github.com/iofog/iofog-kubelet/manager"
-	"github.com/iofog/iofog-kubelet/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/providers"
 	"github.com/pkg/errors"
 )
 

@@ -22,8 +22,8 @@ import (
 	corev1informers "k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/iofog/iofog-kubelet/manager"
-	"github.com/iofog/iofog-kubelet/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/providers"
 )
 
 const (

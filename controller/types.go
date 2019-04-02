@@ -15,7 +15,7 @@ package controller
 
 import (
 	"context"
-	"github.com/iofog/iofog-kubelet/vkubelet"
+	"github.com/eclipse-iofog/iofog-kubelet/vkubelet"
 )
 
 type IOFogsReponse struct {
@@ -79,7 +79,7 @@ type IOFog struct {
 }
 
 type IOFogKubelet struct {
-	KubeletInstance        *vkubelet.Server
-	NodeContextCancel      context.CancelFunc
-	NodeContext            context.Context
+	KubeletInstance   *vkubelet.Server
+	NodeContextCancel context.CancelFunc
+	NodeContext       context.Context
 }

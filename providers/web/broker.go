@@ -18,7 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/iofog/iofog-kubelet/controller"
+	"github.com/eclipse-iofog/iofog-kubelet/controller"
 	"io"
 	"log"
 	"net/url"

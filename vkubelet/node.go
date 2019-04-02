@@ -18,9 +18,9 @@ import (
 	"strings"
 
 	"github.com/cpuguy83/strongerrors/status/ocstatus"
-	"github.com/iofog/iofog-kubelet/log"
-	"github.com/iofog/iofog-kubelet/trace"
-	"github.com/iofog/iofog-kubelet/version"
+	"github.com/eclipse-iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/trace"
+	"github.com/eclipse-iofog/iofog-kubelet/version"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,7 +28,7 @@ import (
 
 var (
 	// vkVersion is a concatenation of the Kubernetes version the VK is built against, the string "vk" and the VK release version.
-	// TODO @pires revisit after VK 1.0 is released as agreed in https://github.com/iofog/iofog-kubelet/pull/446#issuecomment-448423176.
+	// TODO @pires revisit after VK 1.0 is released as agreed in https://github.com/eclipse-iofog/iofog-kubelet/pull/446#issuecomment-448423176.
 	vkVersion = strings.Join([]string{"v1.13.1", "vk", version.Version}, "-")
 )
 

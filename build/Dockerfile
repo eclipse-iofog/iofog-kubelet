@@ -13,8 +13,8 @@ RUN apk add --no-cache \
 	make \
 	bash
 
-COPY . /go/src/github.com/iofog/iofog-kubelet
-WORKDIR /go/src/github.com/iofog/iofog-kubelet
+COPY . /go/src/github.com/eclipse-iofog/iofog-kubelet
+WORKDIR /go/src/github.com/eclipse-iofog/iofog-kubelet
 ARG BUILD_TAGS="netgo osusergo"
 RUN make VK_BUILD_TAGS="${BUILD_TAGS}" build
 RUN cp bin/iofog-kubelet /usr/bin/iofog-kubelet
