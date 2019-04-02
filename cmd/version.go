@@ -16,8 +16,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/eclipse-iofog/iofog-kubelet/version"
 	"github.com/spf13/cobra"
-	"github.com/iofog/iofog-kubelet/version"
 )
 
 var versionCmd = &cobra.Command{

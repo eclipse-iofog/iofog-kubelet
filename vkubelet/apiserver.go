@@ -16,9 +16,9 @@ package vkubelet
 import (
 	"net/http"
 
+	"github.com/eclipse-iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
 	"github.com/gorilla/mux"
-	"github.com/iofog/iofog-kubelet/log"
-	"github.com/iofog/iofog-kubelet/vkubelet/api"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/plugin/ochttp/propagation/b3"
 )

@@ -15,7 +15,7 @@ package logrus
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/log"
 )
 
 // Adapter implements the `log.Logger` interface for logrus

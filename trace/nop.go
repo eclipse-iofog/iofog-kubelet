@@ -16,7 +16,7 @@ package trace
 import (
 	"context"
 
-	"github.com/iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/log"
 	"go.opencensus.io/trace"
 )
 

@@ -24,8 +24,8 @@ import (
 	apivalidation "k8s.io/apimachinery/pkg/util/validation"
 	"k8s.io/client-go/tools/record"
 
-	"github.com/iofog/iofog-kubelet/log"
-	"github.com/iofog/iofog-kubelet/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/manager"
 )
 
 const (
@@ -342,7 +342,7 @@ loop:
 		// Handle population from a field (downward API).
 		case env.ValueFrom != nil && env.ValueFrom.FieldRef != nil:
 			// TODO Implement the downward API.
-			// https://github.com/iofog/iofog-kubelet/issues/123
+			// https://github.com/eclipse-iofog/iofog-kubelet/issues/123
 			continue loop
 		// Handle population from a resource request/limit.
 		case env.ValueFrom != nil && env.ValueFrom.ResourceFieldRef != nil:
