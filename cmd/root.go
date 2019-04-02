@@ -64,8 +64,6 @@ var kubeConfig string
 var kubeNamespace string
 var operatingSystem string
 var provider string
-var taintKey string
-var disableTaint bool
 var logLevel string
 var taint *corev1.Taint
 var kubeSharedInformerFactoryResync time.Duration
@@ -280,9 +278,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&kubeNamespace, "namespace", "", "kubernetes namespace (default is 'all')")
 	RootCmd.PersistentFlags().StringVar(&operatingSystem, "os", "Linux", "Operating System (Linux/Windows)")
 	provider = "web"
-	RootCmd.PersistentFlags().BoolVar(&disableTaint, "disable-taint", false, "disable the iofog-kubelet node taint")
 
-	RootCmd.PersistentFlags().StringVar(&taintKey, "taint", "", "Set node taint key")
 	RootCmd.PersistentFlags().MarkDeprecated("taint", "Taint key should now be configured using the VK_TAINT_KEY environment variable")
 	RootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", `set the log level, e.g. "trace", debug", "info", "warn", "error"`)
 	RootCmd.PersistentFlags().IntVar(&podSyncWorkers, "pod-sync-workers", 10, `set the number of pod synchronization workers`)
@@ -360,11 +356,9 @@ func initConfig() {
 
 	log.L = logger
 
-	if !disableTaint {
-		taint, err = getTaint(taintKey, provider)
-		if err != nil {
-			logger.WithError(err).Fatal("Error setting up desired kubernetes node taint")
-		}
+	taint, err = getTaint()
+	if err != nil {
+		logger.WithError(err).Fatal("Error setting up desired kubernetes node taint")
 	}
 
 	iofogNodes = getIOFogNodes()
