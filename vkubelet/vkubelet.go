@@ -34,7 +34,7 @@ const (
 type Server struct {
 	nodeName        string
 	namespace       string
-	k8sClient       *kubernetes.Clientset
+	Client          *kubernetes.Clientset
 	taint           *corev1.Taint
 	provider        providers.Provider
 	resourceManager *manager.ResourceManager
@@ -64,7 +64,7 @@ func New(cfg Config) *Server {
 		namespace:       cfg.Namespace,
 		nodeName:        cfg.NodeName,
 		taint:           cfg.Taint,
-		k8sClient:       cfg.Client,
+		Client:          cfg.Client,
 		resourceManager: cfg.ResourceManager,
 		provider:        cfg.Provider,
 		podSyncWorkers:  cfg.PodSyncWorkers,

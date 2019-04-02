@@ -26,6 +26,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -54,6 +55,7 @@ const (
 	kubeSharedInformerFactoryDefaultResync = 1 * time.Minute
 )
 
+var deleteNodeLock sync.Mutex
 var controllerToken string
 var controllerUrl string
 var iofogNodes []controller.IOFog
@@ -93,12 +95,9 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 		}
 
 		ioFogKubelets = make(map[string]*controllertypes.IOFogKubelet)
-		if iofogNodes != nil {
-			for _, iofog := range iofogNodes {
-				go startKubelet(iofog.UUID)
-			}
+		for _, iofog := range iofogNodes {
+			go startKubelet(iofog.UUID)
 		}
-
 		ioFogSyncLoop(rootContext)
 
 		sig := make(chan os.Signal, 1)
@@ -203,11 +202,15 @@ func shutdownKubelet(nodeId string, deleteNode bool) {
 		return
 	}
 
-	kubelet.NodeContextCancel()
-	if deleteNode {
-		_ = kubelet.KubeletInstance.DeleteNode(kubelet.NodeContext)
+	deleteNodeLock.Lock()
+	if kubelet != nil && kubelet.KubeletInstance != nil {
+		if deleteNode {
+			_ = kubelet.KubeletInstance.DeleteNode(kubelet.NodeContext)
+		}
+		kubelet.NodeContextCancel()
+		delete(ioFogKubelets, nodeId)
 	}
-	delete(ioFogKubelets, nodeId)
+	deleteNodeLock.Unlock()
 }
 
 func shutdownAll() {

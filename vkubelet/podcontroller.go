@@ -22,8 +22,8 @@ import (
 	"time"
 
 	"github.com/cpuguy83/strongerrors/status/ocstatus"
-	pkgerrors "github.com/pkg/errors"
 	"github.com/iofog/iofog-kubelet/trace"
+	pkgerrors "github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -65,7 +65,7 @@ func NewPodController(server *Server) *PodController {
 	// Create an event broadcaster.
 	eventBroadcaster := record.NewBroadcaster()
 	eventBroadcaster.StartLogging(log.L.Infof)
-	eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: server.k8sClient.CoreV1().Events("")})
+	eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: server.Client.CoreV1().Events("")})
 	recorder := eventBroadcaster.NewRecorder(scheme.Scheme, corev1.EventSource{Component: fmt.Sprintf("%s/pod-controller", server.nodeName)})
 
 	// Create an instance of PodController having a work queue that uses the rate limiter created above.
