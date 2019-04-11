@@ -50,13 +50,13 @@ release: build $(GOPATH)/bin/goreleaser
 
 ##### =====> Utility targets <===== #####
 
-.PHONY: clean test list cover format build-img push-img deps
-
+.PHONY: setup
 deps: setup
 	@echo "Ensuring Dependencies..."
 	$Q go env
 	$Q dep ensure
 
+.PHONY: build-img
 build-img:
 	@echo "Docker Build..."
 	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(IMAGE):$(TAG) -f build/Dockerfile .
@@ -79,6 +79,7 @@ else
 	docker push $(IMAGE):$(BRANCH)
 endif
 
+.PHONY: clean
 clean:
 	@echo "Clean..."
 	$Q rm -rf bin
@@ -95,6 +96,7 @@ else
        tee test/vet.txt | sed '$$ d'; exit $$(tail -1 test/vet.txt)
 endif
 
+.PHONY: test
 test:
 	@echo "Testing..."
 	$Q go test $(if $V,-v) -i $(allpackages) # install -race libs to speed up next run
@@ -108,10 +110,12 @@ else
        tee test/output.txt | sed '$$ d'; exit $$(tail -1 test/output.txt)
 endif
 
+.PHONY: list
 list:
 	@echo "List..."
 	@echo $(allpackages)
 
+.PHONY: cover
 cover: $(GOPATH)/bin/gocovmerge
 	@echo "Coverage Report..."
 	@echo "NOTE: make cover does not exit 1 on failure, don't use it to check for tests success!"
@@ -135,6 +139,7 @@ endif
 	@echo ""
 	$Q go tool cover -func .GOPATH/cover/all.merged
 
+.PHONY: format
 format: $(GOPATH)/bin/goimports
 	@echo "Formatting..."
 	$Q find . -iname \*.go | grep -v \
