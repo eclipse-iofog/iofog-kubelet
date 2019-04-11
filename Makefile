@@ -10,6 +10,7 @@ binary := iofog-kubelet
 build_tags := "netgo osusergo $(VK_BUILD_TAGS)"
 
 BRANCH ?= $(TRAVIS_BRANCH)
+RELEASE_TAG ?= 0.0.0
 
 # comment this line out for quieter things
 #V := 1 # When V is set, print commands and build progress.
