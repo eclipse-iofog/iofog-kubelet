@@ -9,6 +9,8 @@ github_repo := iofog-kubelet/iofog-kubelet
 binary := iofog-kubelet
 build_tags := "netgo osusergo $(VK_BUILD_TAGS)"
 
+BRANCH ?= $(TRAVIS_BRANCH)
+
 # comment this line out for quieter things
 #V := 1 # When V is set, print commands and build progress.
 
@@ -59,9 +61,23 @@ build-img:
 	@echo "Docker Build..."
 	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(IMAGE):$(TAG) -f build/Dockerfile .
 
-push-img: ## Pushes the docker image to docker hub
+.PHONY: push-img
+push-img:
 	@echo $(DOCKER_PASS) | docker login -u $(DOCKER_USER) --password-stdin
-	docker push $(IMAGE):$(TAG)
+ifeq ($(BRANCH), master)
+	# Master branch
+	docker tag $(IMAGE):latest $(IMAGE):$(RELEASE_TAG)
+	docker push $(IMAGE):$(RELEASE_TAG)
+endif
+ifneq (,$(findstring release,$(BRANCH)))
+	# Release branch
+	docker tag $(IMAGE):latest $(IMAGE):rc-$(RELEASE_TAG)
+	docker push $(IMAGE):rc-$(RELEASE_TAG)
+else
+	# Develop and feature branches
+	docker tag $(IMAGE):latest $(IMAGE):$(BRANCH)
+	docker push $(IMAGE):$(BRANCH)
+endif
 
 clean:
 	@echo "Clean..."
