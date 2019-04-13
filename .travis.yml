@@ -13,6 +13,5 @@ jobs:
       script:
         - make vendor
         - make build
-      after_success:
         - make build-img
         - make push-img
