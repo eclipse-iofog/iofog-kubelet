@@ -59,8 +59,7 @@ deps: setup
 
 .PHONY: build-img
 build-img:
-	@echo "Docker Build..."
-	$Q docker build --build-arg BUILD_TAGS="$(VK_BUILD_TAGS)" -t $(IMAGE):$(TAG) -f build/Dockerfile .
+	docker build --rm -t $(IMAGE):latest -f build/Dockerfile .
 
 .PHONY: push-img
 push-img:
