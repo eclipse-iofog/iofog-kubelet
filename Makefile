@@ -4,7 +4,7 @@ SHELL := /bin/bash
 PACKAGE = github.com/eclipse-iofog/iofog-kubelet
 BINARY_NAME = iofog-kubelet
 IMAGE = iofog/iofog-kubelet
-TAG ?= dev
+COMMIT_HASH ?= $(shell git rev-parse --short HEAD 2>/dev/null)
 github_repo := iofog-kubelet/iofog-kubelet
 binary := iofog-kubelet
 build_tags := "netgo osusergo $(VK_BUILD_TAGS)"
@@ -66,6 +66,7 @@ push-img:
 	@echo $(DOCKER_PASS) | docker login -u $(DOCKER_USER) --password-stdin
 ifeq ($(BRANCH), master)
 	# Master branch
+	docker push $(IMAGE):latest
 	docker tag $(IMAGE):latest $(IMAGE):$(RELEASE_TAG)
 	docker push $(IMAGE):$(RELEASE_TAG)
 endif
@@ -75,8 +76,10 @@ ifneq (,$(findstring release,$(BRANCH)))
 	docker push $(IMAGE):rc-$(RELEASE_TAG)
 else
 	# Develop and feature branches
-	docker tag $(IMAGE):latest $(IMAGE):$(BRANCH)
-	docker push $(IMAGE):$(BRANCH)
+	docker tag $(IMAGE):latest $(IMAGE)-$(BRANCH):latest
+	docker push $(IMAGE)-$(BRANCH):latest
+	docker tag $(IMAGE):latest $(IMAGE)-$(BRANCH):$(COMMIT_HASH)
+	docker push $(IMAGE)-$(BRANCH):$(COMMIT_HASH)
 endif
 
 .PHONY: clean
