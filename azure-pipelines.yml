@@ -39,31 +39,25 @@ jobs:
       vmImage: 'Ubuntu-16.04'
     
     steps:
-      - task: GoTool@0
-        displayName: 'install golang'
-        inputs:
-          version: '1.11' 
-
       - task: Docker@2
-        displayName: 'build dev docker'
+        displayName: 'build docker'
         inputs:
           containerRegistry: 'Edgeworx GCP'
           repository: $(repository)
           command: 'build'
-          Dockerfile: 'build/Dockerfile'
-          arguments: --build-arg FILENAME=$(controller_tar)
+          Dockerfile: 'Dockerfile'
           tags: |
             dev-$(commit)
             dev-$(type)
             dev-latest
     
       - task: Docker@2
-        displayName: 'push dev docker'
+        displayName: 'push docker'
         inputs:
           containerRegistry: 'Edgeworx GCP'
           repository: $(repository)
           command: 'push'
-          Dockerfile: 'build/Dockerfile'
+          Dockerfile: 'Dockerfile'
           tags: |
             dev-$(commit)
             dev-$(type)

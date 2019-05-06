@@ -25,7 +25,7 @@ all: test build
 # safebuild builds inside a docker container with no clingons from your $GOPATH
 safebuild:
 	@echo "Building..."
-	$Q docker build --build-arg BUILD_TAGS=$(build_tags) -t $(IMAGE):$(VERSION) -f build/Dockerfile .
+	$Q docker build --build-arg BUILD_TAGS=$(build_tags) -t $(IMAGE):$(VERSION) -f Dockerfile .
 
 .PHONY: build
 build: authors
@@ -59,7 +59,7 @@ deps: setup
 
 .PHONY: build-img
 build-img:
-	docker build --rm -t $(IMAGE):latest -f build/Dockerfile .
+	docker build --rm -t $(IMAGE):latest -f Dockerfile .
 
 .PHONY: push-img
 push-img:
