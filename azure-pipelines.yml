@@ -15,7 +15,6 @@ pr:
 
 variables:
   repository: 'focal-freedom-236620/kubelet'
-  type: $(Build.SourceBranchName)
   commit: $(Build.SourceVersion)
 
 jobs:
@@ -47,9 +46,8 @@ jobs:
           command: 'build'
           Dockerfile: 'Dockerfile'
           tags: |
-            dev-$(commit)
-            dev-$(type)
-            dev-latest
+            $(commit)
+            latest
     
       - task: Docker@2
         displayName: 'push docker'
@@ -59,6 +57,5 @@ jobs:
           command: 'push'
           Dockerfile: 'Dockerfile'
           tags: |
-            dev-$(commit)
-            dev-$(type)
-            dev-latest
+            $(commit)
+            latest
