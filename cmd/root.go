@@ -93,6 +93,8 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 		}
 
 		ioFogKubelets = make(map[string]*controllertypes.IOFogKubelet)
+
+		iofogNodes = getIOFogNodes()
 		for _, iofog := range iofogNodes {
 			go startKubelet(iofog.UUID)
 		}
@@ -360,8 +362,6 @@ func initConfig() {
 	if err != nil {
 		logger.WithError(err).Fatal("Error setting up desired kubernetes node taint")
 	}
-
-	iofogNodes = getIOFogNodes()
 
 	if podSyncWorkers <= 0 {
 		logger.Fatal("The number of pod synchronization workers should not be negative")

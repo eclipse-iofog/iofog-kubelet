@@ -207,7 +207,7 @@ setup: clean
 	go get github.com/mitchellh/gox
 	go get github.com/goreleaser/goreleaser
 
-VERSION          := $(shell git describe --tags --always --dirty="-dev")
+VERSION          := 1.0.0
 DATE             := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
 VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/version.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/version.BuildTime=$(DATE)"'
 
