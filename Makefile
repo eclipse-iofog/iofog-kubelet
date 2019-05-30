@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 
 # Project variables
+DEP_VERSION = 0.5.0
 PACKAGE = github.com/eclipse-iofog/iofog-kubelet
 BINARY_NAME = iofog-kubelet
 IMAGE = iofog/iofog-kubelet
@@ -26,6 +27,17 @@ all: test build
 safebuild:
 	@echo "Building..."
 	$Q docker build --build-arg BUILD_TAGS=$(build_tags) -t $(IMAGE):$(VERSION) -f Dockerfile .
+
+bin/dep: bin/dep-$(DEP_VERSION)
+	@ln -sf dep-$(DEP_VERSION) bin/dep
+bin/dep-$(DEP_VERSION):
+	@mkdir -p bin
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=bin DEP_RELEASE_TAG=v$(DEP_VERSION) sh
+	@mv bin/dep $@
+
+.PHONY: vendor
+vendor: bin/dep ## Install dependencies
+	bin/dep ensure -v -vendor-only
 
 .PHONY: build
 build: authors
