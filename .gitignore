@@ -42,4 +42,4 @@ debug
 /.vscode
 .DS_Store
 
-vendor
+vendor/

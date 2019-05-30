@@ -1,7 +1,6 @@
-
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -17,141 +16,67 @@
 #   source = "github.com/myfork/project2"
 #
 # [[override]]
-#  name = "github.com/x/y"
-#  version = "2.4.0"
-
-[prune]
-  unused-packages = true
-  non-go = true
-  go-tests = true
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/mitchellh/go-homedir"
-
-[[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.1"
-
-[[constraint]]
-  name = "github.com/spf13/viper"
-  version = "1.0.0"
-
-[[constraint]]
-  name = "github.com/google/uuid"
-  version = "0.2.0"
-
-[[constraint]]
-  name = "github.com/hyperhq/hyper-api"
-  revision = "18c77d3f9fe0abebb41b45c12f383ecac46f4ff1"
-
+#   name = "github.com/x/y"
+#   version = "2.4.0"
+#
+# [prune]
+#   non-go = false
+#   go-tests = true
+#   unused-packages = true
 
 
 [[constraint]]
-  name = "github.com/gorilla/mux"
-  version = "1.6.0"
+  name = "contrib.go.opencensus.io/exporter/ocagent"
+  version = "0.5.0"
 
 [[constraint]]
-  name = "github.com/hyperhq/hypercli"
-  revision = "29217d318cab52815518a1126d57ca010de83e4d"
-
-[[constraint]]
-  name = "github.com/Azure/azure-sdk-for-go"
-  version = "21.1.0"
-
-[[constraint]]
-  name = "github.com/lawrencegripper/pod2docker"
-  version = "0.5.1"
-
-[[constraint]]
-  name = "github.com/aws/aws-sdk-go"
-  version = "1.13.38"
-
-[[constraint]]
-  name = "k8s.io/api"
-  version = "kubernetes-1.13.1"
-
-[[constraint]]
-  name = "k8s.io/apimachinery"
-  version = "kubernetes-1.13.1"
-
-[[constraint]]
-  name = "k8s.io/client-go"
-  version = "kubernetes-1.13.1"
+  name = "github.com/Sirupsen/logrus"
+  version = "1.4.2"
 
 [[constraint]]
   name = "github.com/cpuguy83/strongerrors"
   version = "0.2.1"
 
-# These are required for HyperHQ
-[[override]]
-  name = "github.com/xeipuuv/gojsonschema"
-  revision = "0c8571ac0ce161a5feb57375a9cdf148c98c0f70"
-
-[[override]]
-  name = "github.com/docker/libcompose"
-  version = "0.2.0"
-
-[[override]]
-  name = "github.com/hyperhq/libcompose"
-  revision = "15d3a105140f968f5d4f62d2f44afd22a24a98fb"
+[[constraint]]
+  name = "github.com/gorilla/mux"
+  version = "1.7.2"
 
 [[constraint]]
-  branch = "feature/wolfpack"
-  name = "github.com/vmware/vic"
-
-[[override]]
-  name = "github.com/docker/docker"
-  revision = "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
-
-[[override]]
-  name = "github.com/vishvananda/netlink"
-  revision = "482f7a52b758233521878cb6c5904b6bd63f3457"
-
-[[override]]
-  name = "github.com/opencontainers/runtime-spec"
-  revision = "1c7c27d043c2a5e513a44084d2b10d77d1402b8c"
-
-[[override]]
-  name = "github.com/go-openapi/analysis"
-  revision = "d5a75b7d751ca3f11ad5d93cfe97405f2c3f6a47"
-
-[[override]]
-  name = "github.com/go-openapi/errors"
-  revision = "fc3f73a224499b047eda7191e5d22e1e9631e86f"
-
-[[override]]
-  name = "github.com/go-openapi/loads"
-  revision = "6bb6486231e079ea125c0f39994ed3d0c53399ed"
-
-[[override]]
-  name = "github.com/go-openapi/runtime"
-  revision = "3b13ebb46790d871d74a6c2450fa4b1280f90854"
-
-[[override]]
-  name = "github.com/go-openapi/strfmt"
-  revision = "0cb3db44c13bad3b3f567b762a66751972a310cc"
-
-[[override]]
-  name = "github.com/go-openapi/validate"
-  revision = "035dcd74f1f61e83debe1c22950dc53556e7e4b2"
+  name = "github.com/mitchellh/go-homedir"
+  version = "1.1.0"
 
 [[constraint]]
-  name = "github.com/Azure/go-autorest"
-  version = "10.8.1"
+  name = "github.com/pkg/errors"
+  version = "0.8.1"
 
 [[constraint]]
-  name = "github.com/aliyun/alibaba-cloud-sdk-go"
-  version = "1.27.7"
-
-[[override]]
-  name = "github.com/json-iterator/go"
-  version = "v1.1.5"
+  name = "github.com/spf13/cobra"
+  version = "0.0.4"
 
 [[constraint]]
-  name = "github.com/hashicorp/nomad"
-  revision = "v0.8.6"
+  name = "github.com/spf13/viper"
+  version = "1.4.0"
 
-[[override]]
-  name = "github.com/ugorji/go"
-  revision = "0053ebfd9d0ee06ccefbfe17072021e1d4acebee"
+[[constraint]]
+  name = "github.com/stretchr/testify"
+  version = "1.3.0"
+
+[[constraint]]
+  name = "go.opencensus.io"
+  version = "0.20.2"
+
+[[constraint]]
+  branch = "master"
+  name = "k8s.io/api"
+
+[[constraint]]
+  branch = "master"
+  name = "k8s.io/client-go"
+
+[[constraint]]
+  name = "k8s.io/kubernetes"
+  version = "1.14.2"
+
+[prune]
+  go-tests = true
+  unused-packages = true
