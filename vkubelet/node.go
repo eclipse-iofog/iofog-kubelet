@@ -66,7 +66,16 @@ func (s *Server) registerNode(ctx context.Context) error {
 			Capacity:        s.provider.Capacity(ctx),
 			Allocatable:     s.provider.Capacity(ctx),
 			Conditions:      s.provider.NodeConditions(ctx),
-			Addresses:       s.provider.NodeAddresses(ctx),
+			Addresses:       []corev1.NodeAddress{
+				{
+					Type: corev1.NodeExternalIP,
+					Address: "35.189.37.155",
+				},
+				{
+					Type: corev1.NodeInternalIP,
+					Address: "10.128.0.50",
+				},
+			},
 			DaemonEndpoints: *s.provider.NodeDaemonEndpoints(ctx),
 		},
 	}
@@ -115,7 +124,16 @@ func (s *Server) updateNode(ctx context.Context) {
 	n.Status.Capacity = capacity
 	n.Status.Allocatable = allocatable
 
-	n.Status.Addresses = s.provider.NodeAddresses(ctx)
+	n.Status.Addresses = []corev1.NodeAddress{
+		{
+			Type: corev1.NodeExternalIP,
+			Address: "35.189.37.155",
+		},
+		{
+			Type: corev1.NodeInternalIP,
+			Address: "10.128.0.50",
+		},
+	}
 
 	n, err = s.Client.CoreV1().Nodes().UpdateStatus(n)
 	if err != nil {
