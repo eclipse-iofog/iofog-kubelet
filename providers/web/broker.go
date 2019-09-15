@@ -242,7 +242,16 @@ func (p *BrokerProvider) NodeAddresses(ctx context.Context) []v1.NodeAddress {
 
 	if err != nil {
 		log.Println("error ", err)
-		return nil
+		nodeAddresses = []v1.NodeAddress{
+			{
+				Type: "ExternalIP",
+				Address: "0.0.0.0",
+			},
+			{
+				Type: "InternalIP",
+				Address: "0.0.0.0",
+			},
+		}
 	}
 
 	return nodeAddresses
