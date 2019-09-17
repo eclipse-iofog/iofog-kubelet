@@ -15,6 +15,7 @@ pr: none
 variables:
   repository: 'focal-freedom-236620/kubelet'
   build: $(Build.BuildId)
+  ref: $(Build.SourceBranch)
   version:
 
 jobs:
