@@ -219,9 +219,13 @@ setup: clean
 	go get github.com/mitchellh/gox
 	go get github.com/goreleaser/goreleaser
 
-VERSION          := 1.2.0
+MAJOR            ?= 1
+MINOR            ?= 3
+PATCH            ?= 0
+SUFFIX           ?= -dev
+VERSION          := $(MAJOR).$(MINOR).$(PATCH)$(SUFFIX)
 DATE             := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
-VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/version.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/version.BuildTime=$(DATE)"'
+VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/versions.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/versions.BuildTime=$(DATE)"'
 
 # assuming go 1.9 here!!
 _allpackages = $(shell go list ./...)
