@@ -10,6 +10,7 @@ ARG BUILD_TAGS="netgo osusergo"
 
 RUN apk add --update --no-cache bash curl git make && \
     make vendor && \
+    . version && export MAJOR && export MINOR && export PATCH && export SUFFIX \
     make VK_BUILD_TAGS="${BUILD_TAGS}" build && \
     cp bin/iofog-kubelet /usr/bin/iofog-kubelet
 
