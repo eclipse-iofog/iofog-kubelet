@@ -19,23 +19,6 @@ variables:
   version:
 
 jobs:
-  - job: Platform
-    dependsOn: Kubelet
-    pool: server
-    variables:
-      tag: b-$(buildTag)
-
-    steps:
-      - task: InvokeRESTAPI@1
-        displayName: 'trigger platform job'
-        inputs:
-          connectionType: 'connectedServiceName'
-          serviceConnection: 'Pipelines'
-          method: 'POST'
-          urlSuffix: '/edgeworx/_apis/build/builds?api-version=5.0'
-          body: "{\"Parameters\":\"{\\\"images.kubelet\\\": \\\"gcr.io/$(repository):$(tag)\\\"}\", \"Definition\":{\"id\":\"5\"}}"
-          waitForCompletion: 'false'
-
   - job: Kubelet
     pool:
       vmImage: 'Ubuntu-16.04'
@@ -64,4 +47,5 @@ jobs:
         Dockerfile: 'Dockerfile'
         tags: |
           $(version)
+          $(version)-$(build)
           latest
