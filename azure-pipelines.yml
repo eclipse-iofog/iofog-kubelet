@@ -16,6 +16,7 @@ variables:
   repository: 'focal-freedom-236620/kubelet'
   build: $(Build.BuildId)
   ref: $(Build.SourceBranch)
+  branch: $(Build.SourceBranchName)
   version:
 
 jobs:
@@ -47,7 +48,8 @@ jobs:
       Dockerfile: 'Dockerfile'
       tags: |
         $(version)
-        $(version)-$(build)
+        $(branch)
+        $(branch)-$(build)
         latest
 
   - script: |
