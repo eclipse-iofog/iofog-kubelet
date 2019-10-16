@@ -109,8 +109,7 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 			Endpoint: controllerUrl,
 		}
 
-		controllerClient = client.New(controllerUrl)
-		controllerClient.SetAccessToken(controllerToken)
+		controllerClient, _ = client.NewWithToken(controllerUrl, controllerToken)
 
 		iofogNodes = getIOFogNodes()
 		for _, iofog := range iofogNodes {

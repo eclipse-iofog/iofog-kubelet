@@ -36,15 +36,15 @@ type FlowPod struct {
 
 // NewBrokerProvider creates a new BrokerProvider
 func NewBrokerProvider(daemonEndpointPort int32, nodeName, operatingSystem string, controller apps.IofogController, controllerClient *client.Client, nodeId string, store *api.KeyValueStore) (*BrokerProvider, error) {
-	var provider BrokerProvider
-
-	provider.nodeName = nodeName
-	provider.nodeId = nodeId
-	provider.operatingSystem = operatingSystem
-	provider.daemonEndpointPort = daemonEndpointPort
-	provider.controller = controller
-	provider.client = controllerClient
-	provider.store = store
+	provider := BrokerProvider{
+		nodeName:           nodeName,
+		nodeId:             nodeId,
+		operatingSystem:    operatingSystem,
+		daemonEndpointPort: daemonEndpointPort,
+		controller:         controller,
+		client:             controllerClient,
+		store:              store,
+	}
 
 	return &provider, nil
 }
