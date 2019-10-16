@@ -15,8 +15,11 @@ package register
 
 import (
 	"github.com/cpuguy83/strongerrors"
+	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
+	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/manager"
 	"github.com/eclipse-iofog/iofog-kubelet/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
 	"github.com/pkg/errors"
 )
 
@@ -24,15 +27,16 @@ var providerInits = make(map[string]initFunc)
 
 // InitConfig is the config passed to initialize a registered provider.
 type InitConfig struct {
-	ConfigPath      string
-	NodeName        string
-	OperatingSystem string
-	InternalIP      string
-	DaemonPort      int32
-	ResourceManager *manager.ResourceManager
-	ControllerToken string
-	ControllerUrl   string
-	NodeId          string
+	ConfigPath       string
+	NodeName         string
+	OperatingSystem  string
+	InternalIP       string
+	DaemonPort       int32
+	ResourceManager  *manager.ResourceManager
+	Controller       apps.IofogController
+	ControllerClient *client.Client
+	NodeId           string
+	Store            *api.KeyValueStore
 }
 
 type initFunc func(InitConfig) (providers.Provider, error)
