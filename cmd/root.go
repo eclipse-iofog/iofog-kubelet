@@ -62,30 +62,30 @@ const (
 	kubeSharedInformerFactoryDefaultResync = 1 * time.Minute
 )
 
-var deleteNodeLock sync.Mutex
-var controllerToken string
-var controllerUrl string
-var controller apps.IofogController
-var controllerClient *client.Client
-var kubeletConfig string
-var kubeConfig string
-var kubeNamespace string
-var operatingSystem string
-var provider string
-var logLevel string
-var taint *corev1.Taint
-var kubeSharedInformerFactoryResync time.Duration
-var podSyncWorkers int
-var ioFogKubelets map[string]*IOFogKubelet
-var configMapName string
-var iofogNodes []client.AgentInfo
-
-var userTraceExporters []string
-var userTraceConfig = TracingExporterOptions{Tags: make(map[string]string)}
-var traceSampler string
-
-// Create a root context to be used by the pod controller and by the shared informer factories.
-var rootContext, rootContextCancel = context.WithCancel(context.Background())
+var (
+	deleteNodeLock                  sync.Mutex
+	controllerToken                 string
+	controllerUrl                   string
+	controller                      apps.IofogController
+	controllerClient                *client.Client
+	kubeletConfig                   string
+	kubeConfig                      string
+	kubeNamespace                   string
+	operatingSystem                 string
+	provider                        string
+	logLevel                        string
+	taint                           *corev1.Taint
+	kubeSharedInformerFactoryResync time.Duration
+	podSyncWorkers                  int
+	ioFogKubelets                   map[string]*IOFogKubelet
+	configMapName                   string
+	iofogNodes                      []client.AgentInfo
+	userTraceExporters              []string
+	userTraceConfig                 = TracingExporterOptions{Tags: make(map[string]string)}
+	traceSampler                    string
+	// Create a root context to be used by the pod controller and by the shared informer factories.
+	rootContext, rootContextCancel = context.WithCancel(context.Background())
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -109,7 +109,10 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 			Endpoint: controllerUrl,
 		}
 
-		controllerClient, _ = client.NewWithToken(controllerUrl, controllerToken)
+		controllerClient, err = client.NewWithToken(controllerUrl, controllerToken)
+		if err != nil {
+			log.L.WithError(err).Fatal("Error initializing controller client", err)
+		}
 
 		iofogNodes = getIOFogNodes()
 		for _, iofog := range iofogNodes {
@@ -182,6 +185,9 @@ func startKubelet(nodeId string) {
 
 	configMap := k8sClient.CoreV1().ConfigMaps(kubeNamespace)
 	store, err := api.NewKeyValueStore(configMap, configMapName)
+	if err != nil {
+		log.L.WithError(err).Fatal("Error initializing ConfigMap", err)
+	}
 
 	initConfig := register.InitConfig{
 		NodeName:         nodeName,

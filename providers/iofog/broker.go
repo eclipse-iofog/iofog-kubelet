@@ -67,10 +67,8 @@ func (p *BrokerProvider) DeletePod(ctx context.Context, pod *v1.Pod) error {
 		if err = p.client.DeleteFlow(flowPod.FlowInfo.ID); err != nil {
 			return err
 		}
-		_ = p.store.Remove(pod.Name)
+		return p.store.Remove(pod.Name)
 	}
-
-	return nil
 }
 
 // GetPod returns a pod by name that is being managed by the iofog server
@@ -109,7 +107,7 @@ func (p *BrokerProvider) GetPodStatus(ctx context.Context, namespace, name strin
 
 	microservices, err := p.client.GetMicroservicesPerFlow(flowPod.FlowInfo.ID)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	containersStatus := []v1.ContainerStatus{}
