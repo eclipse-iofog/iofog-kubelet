@@ -72,6 +72,19 @@
   revision = "6480d4af844c189cf5dd913db24ddd339d3a4f85"
 
 [[projects]]
+  branch = "feature/autogen"
+  digest = "1:410d5991716bd0bac8283fccd85c4f73f68176c1b5224bc79f8550acb2176afe"
+  name = "github.com/eclipse-iofog/iofog-go-sdk"
+  packages = [
+    "pkg/apps",
+    "pkg/apps/application",
+    "pkg/apps/microservice",
+    "pkg/client",
+  ]
+  pruneopts = "UT"
+  revision = "895ea7cacb8768df9b5a80ee833003427767cf7d"
+
+[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -873,6 +886,9 @@
     "github.com/cpuguy83/strongerrors",
     "github.com/cpuguy83/strongerrors/status",
     "github.com/cpuguy83/strongerrors/status/ocstatus",
+    "github.com/eclipse-iofog/iofog-go-sdk/pkg/apps",
+    "github.com/eclipse-iofog/iofog-go-sdk/pkg/apps/application",
+    "github.com/eclipse-iofog/iofog-go-sdk/pkg/client",
     "github.com/gorilla/mux",
     "github.com/mitchellh/go-homedir",
     "github.com/pkg/errors",
@@ -886,6 +902,7 @@
     "go.opencensus.io/zpages",
     "k8s.io/api/core/v1",
     "k8s.io/apimachinery/pkg/api/errors",
+    "k8s.io/apimachinery/pkg/api/resource",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/fields",
     "k8s.io/apimachinery/pkg/labels",

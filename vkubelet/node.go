@@ -29,7 +29,7 @@ import (
 var (
 	// vkVersion is a concatenation of the Kubernetes version the VK is built against, the string "vk" and the VK release version.
 	// TODO @pires revisit after VK 1.0 is released as agreed in https://github.com/eclipse-iofog/iofog-kubelet/pull/446#issuecomment-448423176.
-	vkVersion = strings.Join([]string{"v1.13.1", "vk", version.Version}, "-")
+	vkVersion = strings.Join([]string{"iofog-kubelet", version.Version}, "-")
 )
 
 // registerNode registers the virtual node with the Kubernetes API.

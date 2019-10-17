@@ -15,19 +15,20 @@ package register
 
 import (
 	"github.com/eclipse-iofog/iofog-kubelet/providers"
-	"github.com/eclipse-iofog/iofog-kubelet/providers/web"
+	"github.com/eclipse-iofog/iofog-kubelet/providers/iofog"
 )
 
 func init() {
-	register("web", initWeb)
+	register("iofog", initWeb)
 }
 
 func initWeb(cfg InitConfig) (providers.Provider, error) {
-	return web.NewBrokerProvider(
+	return iofog.NewBrokerProvider(
 		cfg.DaemonPort,
 		cfg.NodeName,
 		cfg.OperatingSystem,
-		cfg.ControllerToken,
-		cfg.ControllerUrl,
-		cfg.NodeId)
+		cfg.Controller,
+		cfg.ControllerClient,
+		cfg.NodeId,
+		cfg.Store)
 }
