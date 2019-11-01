@@ -205,27 +205,41 @@ func (p *BrokerProvider) Allocatable(ctx context.Context) v1.ResourceList {
 
 // NodeConditions returns a list of conditions (Ready, OutOfDisk, etc), for updates to the node status
 func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition {
-	node, _ := p.client.GetAgentByID(p.nodeId)
-	now := metav1.Time{Time: time.Unix(node.LastStatusTimeMsUTC/1000, -1)}
+	node, err := p.client.GetAgentByID(p.nodeId)
 
-	var nodeRunning v1.ConditionStatus = "True"
-	if node.DaemonStatus != "RUNNING" {
-		nodeRunning = "False"
-	}
+	var nodeRunning v1.ConditionStatus = "False"
+	daemonStatus := "UNKNOWN"
 
 	var outOfDisk v1.ConditionStatus = "False"
-	if int64(node.DiskUsage) >= node.DiskLimit {
-		outOfDisk = "True"
-	}
-
 	var diskPressure v1.ConditionStatus = "False"
-	if (node.DiskUsage / float64(node.DiskLimit)) >= 0.9 {
-		diskPressure = "True"
-	}
+	diskUsage := ""
 
 	var memoryPressure v1.ConditionStatus = "False"
-	if (node.MemoryUsage / float64(node.MemoryLimit)) >= 0.9 {
-		memoryPressure = "True"
+	memoryUsage := ""
+
+	var now = metav1.Time{Time: time.Now()}
+
+	if err == nil && node != nil {
+		now = metav1.Time{Time: time.Unix(node.LastStatusTimeMsUTC/1000, -1)}
+
+		daemonStatus = node.DaemonStatus
+		if node.DaemonStatus != "RUNNING" {
+			nodeRunning = "False"
+		}
+
+		diskUsage = "Usage: " + fmt.Sprintf("%f.0", node.DiskUsage) + ", Limit: " + string(node.DiskLimit)
+		if int64(node.DiskUsage) >= node.DiskLimit {
+			outOfDisk = "True"
+		}
+
+		if (node.DiskUsage / float64(node.DiskLimit)) >= 0.9 {
+			diskPressure = "True"
+		}
+
+		memoryUsage = "Usage: " + fmt.Sprintf("%f.0", node.MemoryUsage) + ", Limit: " + string(node.MemoryLimit)
+		if (node.MemoryUsage / float64(node.MemoryLimit)) >= 0.9 {
+			memoryPressure = "True"
+		}
 	}
 
 	condition := []v1.NodeCondition{
@@ -235,7 +249,7 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 			LastHeartbeatTime:  now,
 			LastTransitionTime: now,
 			Reason:             "",
-			Message:            node.DaemonStatus,
+			Message:            daemonStatus,
 		},
 		{
 			Type:               "OutOfDisk",
@@ -243,7 +257,7 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 			LastHeartbeatTime:  now,
 			LastTransitionTime: now,
 			Reason:             "",
-			Message:            "Usage: " + fmt.Sprintf("%f.0", node.DiskUsage) + ", Limit: " + string(node.DiskLimit),
+			Message:            diskUsage,
 		},
 		{
 			Type:               "MemoryPressure",
@@ -251,7 +265,7 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 			LastHeartbeatTime:  now,
 			LastTransitionTime: now,
 			Reason:             "",
-			Message:            "Usage: " + fmt.Sprintf("%f.0", node.MemoryUsage) + ", Limit: " + string(node.MemoryLimit),
+			Message:            memoryUsage,
 		},
 		{
 			Type:               "DiskPressure",
@@ -259,7 +273,7 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 			LastHeartbeatTime:  now,
 			LastTransitionTime: now,
 			Reason:             "",
-			Message:            "Usage: " + fmt.Sprintf("%f.0", node.DiskUsage) + ", Limit: " + string(node.DiskLimit),
+			Message:            diskUsage,
 		},
 		{
 			Type:               "NetworkUnavailable",
