@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
-	deploy "github.com/eclipse-iofog/iofog-go-sdk/pkg/apps/application"
 	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
 	"io"
@@ -327,7 +326,7 @@ func (p *BrokerProvider) createUpdatePod(pod *v1.Pod) error {
 		return err
 	}
 
-	if err := deploy.Execute(p.controller, *application); err != nil {
+	if err := apps.DeployApplication(p.controller, *application); err != nil {
 		return err
 	}
 
