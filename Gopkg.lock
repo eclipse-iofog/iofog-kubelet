@@ -72,17 +72,15 @@
   revision = "6480d4af844c189cf5dd913db24ddd339d3a4f85"
 
 [[projects]]
-  branch = "feature/autogen"
-  digest = "1:410d5991716bd0bac8283fccd85c4f73f68176c1b5224bc79f8550acb2176afe"
+  branch = "develop"
+  digest = "1:fa45ab82b520adac9a4c6db078b16955e2b5166490431b83da4fc45a9ec31db1"
   name = "github.com/eclipse-iofog/iofog-go-sdk"
   packages = [
     "pkg/apps",
-    "pkg/apps/application",
-    "pkg/apps/microservice",
     "pkg/client",
   ]
   pruneopts = "UT"
-  revision = "895ea7cacb8768df9b5a80ee833003427767cf7d"
+  revision = "f049408807817dd796e5e5df01c75d8df8e57dfc"
 
 [[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
@@ -887,7 +885,6 @@
     "github.com/cpuguy83/strongerrors/status",
     "github.com/cpuguy83/strongerrors/status/ocstatus",
     "github.com/eclipse-iofog/iofog-go-sdk/pkg/apps",
-    "github.com/eclipse-iofog/iofog-go-sdk/pkg/apps/application",
     "github.com/eclipse-iofog/iofog-go-sdk/pkg/client",
     "github.com/gorilla/mux",
     "github.com/mitchellh/go-homedir",
