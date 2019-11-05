@@ -7,6 +7,7 @@ import (
 	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
 	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
+	"github.com/eclipse-iofog/iofog-kubelet/log"
 	"io"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -184,7 +185,12 @@ func (p *BrokerProvider) GetPods(ctx context.Context) ([]*v1.Pod, error) {
 
 // Capacity returns a resource list containing the capacity limits
 func (p *BrokerProvider) Capacity(ctx context.Context) v1.ResourceList {
-	node, _ := p.client.GetAgentByID(p.nodeId)
+	node, err := p.client.GetAgentByID(p.nodeId)
+	if err != nil {
+		log.L.Error("Error getting node capacity: ", err)
+		return nil
+	}
+
 	return v1.ResourceList{
 		"cpu":    *resource.NewQuantity(node.CPULimit, resource.DecimalSI),
 		"memory": *resource.NewQuantity(node.MemoryLimit, resource.DecimalSI),
@@ -194,7 +200,12 @@ func (p *BrokerProvider) Capacity(ctx context.Context) v1.ResourceList {
 
 // Allocatable returns a resource list containing the allocatable limits
 func (p *BrokerProvider) Allocatable(ctx context.Context) v1.ResourceList {
-	node, _ := p.client.GetAgentByID(p.nodeId)
+	node, err := p.client.GetAgentByID(p.nodeId)
+	if err != nil {
+		log.L.Error("Error getting node's allocatable resources: ", err)
+		return nil
+	}
+
 	return v1.ResourceList{
 		"cpu":    *resource.NewQuantity(node.CPULimit-int64(node.CPUUsage), resource.DecimalSI),
 		"memory": *resource.NewQuantity(node.MemoryLimit-int64(node.MemoryUsage), resource.DecimalSI),
@@ -290,7 +301,12 @@ func (p *BrokerProvider) NodeConditions(ctx context.Context) []v1.NodeCondition 
 // NodeAddresses returns a list of addresses for the node status
 // within Kubernetes.
 func (p *BrokerProvider) NodeAddresses(ctx context.Context) []v1.NodeAddress {
-	node, _ := p.client.GetAgentByID(p.nodeId)
+	node, err := p.client.GetAgentByID(p.nodeId)
+	if err != nil {
+		log.L.Error("Error getting node's IP': ", err)
+		return nil
+	}
+
 	nodeAddresses := []v1.NodeAddress{
 		{
 			Type:    "InternalIP",
