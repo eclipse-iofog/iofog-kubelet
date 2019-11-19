@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[override]]
+  name = "github.com/eclipse-iofog/iofog-go-sdk"
+  version = "=v1.3.0"
 
 [[constraint]]
   name = "contrib.go.opencensus.io/exporter/ocagent"

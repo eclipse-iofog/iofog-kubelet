@@ -16,10 +16,11 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/eclipse-iofog/iofog-kubelet/controller"
-	controllertypes "github.com/eclipse-iofog/iofog-kubelet/controller"
+	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
+	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/providers/register"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet"
+	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
 	"k8s.io/apimachinery/pkg/fields"
 	"os"
 	"os/signal"
@@ -47,6 +48,12 @@ import (
 	kubeinformers "k8s.io/client-go/informers"
 )
 
+type IOFogKubelet struct {
+	KubeletInstance   *vkubelet.Server
+	NodeContextCancel context.CancelFunc
+	NodeContext       context.Context
+}
+
 const (
 	defaultDaemonPort = "10250"
 	// kubeSharedInformerFactoryDefaultResync is the default resync period used by the shared informer factories for Kubernetes resources.
@@ -55,27 +62,30 @@ const (
 	kubeSharedInformerFactoryDefaultResync = 1 * time.Minute
 )
 
-var deleteNodeLock sync.Mutex
-var controllerToken string
-var controllerUrl string
-var iofogNodes []controller.IOFog
-var kubeletConfig string
-var kubeConfig string
-var kubeNamespace string
-var operatingSystem string
-var provider string
-var logLevel string
-var taint *corev1.Taint
-var kubeSharedInformerFactoryResync time.Duration
-var podSyncWorkers int
-var ioFogKubelets map[string]*controllertypes.IOFogKubelet
-
-var userTraceExporters []string
-var userTraceConfig = TracingExporterOptions{Tags: make(map[string]string)}
-var traceSampler string
-
-// Create a root context to be used by the pod controller and by the shared informer factories.
-var rootContext, rootContextCancel = context.WithCancel(context.Background())
+var (
+	deleteNodeLock                  sync.Mutex
+	controllerToken                 string
+	controllerUrl                   string
+	controller                      apps.IofogController
+	controllerClient                *client.Client
+	kubeletConfig                   string
+	kubeConfig                      string
+	kubeNamespace                   string
+	operatingSystem                 string
+	provider                        string
+	logLevel                        string
+	taint                           *corev1.Taint
+	kubeSharedInformerFactoryResync time.Duration
+	podSyncWorkers                  int
+	ioFogKubelets                   map[string]*IOFogKubelet
+	configMapName                   string
+	iofogNodes                      []client.AgentInfo
+	userTraceExporters              []string
+	userTraceConfig                 = TracingExporterOptions{Tags: make(map[string]string)}
+	traceSampler                    string
+	// Create a root context to be used by the pod controller and by the shared informer factories.
+	rootContext, rootContextCancel = context.WithCancel(context.Background())
+)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -92,7 +102,17 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 			log.L.WithError(err).Fatal("Error initializing controller server")
 		}
 
-		ioFogKubelets = make(map[string]*controllertypes.IOFogKubelet)
+		ioFogKubelets = make(map[string]*IOFogKubelet)
+
+		controller = apps.IofogController{
+			Token:    controllerToken,
+			Endpoint: controllerUrl,
+		}
+
+		controllerClient, err = client.NewWithToken(controllerUrl, controllerToken)
+		if err != nil {
+			log.L.WithError(err).Fatal("Error initializing controller client", err)
+		}
 
 		iofogNodes = getIOFogNodes()
 		for _, iofog := range iofogNodes {
@@ -119,7 +139,7 @@ func startKubelet(nodeId string) {
 		return
 	}
 
-	kubelet := new(controllertypes.IOFogKubelet)
+	kubelet := new(IOFogKubelet)
 	ioFogKubelets[nodeId] = kubelet
 
 	nodeContext, nodeContextCancel := context.WithCancel(rootContext)
@@ -163,15 +183,22 @@ func startKubelet(nodeId string) {
 		log.L.WithError(err).WithField("value", daemonPortEnv).Fatal("Invalid value from KUBELET_PORT in environment")
 	}
 
+	configMap := k8sClient.CoreV1().ConfigMaps(kubeNamespace)
+	store, err := api.NewKeyValueStore(configMap, configMapName)
+	if err != nil {
+		log.L.WithError(err).Fatal("Error initializing ConfigMap", err)
+	}
+
 	initConfig := register.InitConfig{
-		NodeName:        nodeName,
-		OperatingSystem: operatingSystem,
-		ResourceManager: rm,
-		DaemonPort:      int32(daemonPort),
-		InternalIP:      os.Getenv("VKUBELET_POD_IP"),
-		ControllerToken: controllerToken,
-		ControllerUrl:   controllerUrl,
-		NodeId:          nodeId,
+		NodeName:         nodeName,
+		OperatingSystem:  operatingSystem,
+		ResourceManager:  rm,
+		DaemonPort:       int32(daemonPort),
+		InternalIP:       os.Getenv("VKUBELET_POD_IP"),
+		Controller:       controller,
+		ControllerClient: controllerClient,
+		NodeId:           nodeId,
+		Store:            store,
 	}
 
 	providerInstance, err := register.GetProvider(provider, initConfig)
@@ -273,13 +300,14 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	//RootCmd.PersistentFlags().StringVar(&kubeletConfig, "config", "", "config file (default is $HOME/.iofog-kubelet.yaml)")
+	// RootCmd.PersistentFlags().StringVar(&kubeletConfig, "config", "", "config file (default is $HOME/.iofog-kubelet.yaml)")
 	RootCmd.PersistentFlags().StringVar(&controllerToken, "iofog-token", "", "ioFog Controller token")
 	RootCmd.PersistentFlags().StringVar(&controllerUrl, "iofog-url", "", "ioFog Controller URL")
 	RootCmd.PersistentFlags().StringVar(&kubeConfig, "kubeconfig", "", "config file (default is $HOME/.kube/config)")
 	RootCmd.PersistentFlags().StringVar(&kubeNamespace, "namespace", "", "kubernetes namespace (default is 'all')")
+	RootCmd.PersistentFlags().StringVar(&configMapName, "config-map-name", "iofog-kubelet-store", "Config Map Name")
 	RootCmd.PersistentFlags().StringVar(&operatingSystem, "os", "Linux", "Operating System (Linux/Windows)")
-	provider = "web"
+	provider = "iofog"
 
 	RootCmd.PersistentFlags().MarkDeprecated("taint", "Taint key should now be configured using the VK_TAINT_KEY environment variable")
 	RootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", `set the log level, e.g. "trace", debug", "info", "warn", "error"`)
@@ -415,21 +443,12 @@ func initConfig() {
 	}
 }
 
-func getIOFogNodes() []controller.IOFog {
-	client, err := controller.NewHttpClient(controllerToken, controllerUrl)
-	if err != nil {
+func getIOFogNodes() []client.AgentInfo {
+	if agents, err := controllerClient.ListAgents(); err != nil {
 		log.G(rootContext).Fatal(err)
-	}
-
-	urlPathStr := "/api/v3/iofog-list"
-	var iofogs controller.IOFogsReponse
-	err = client.DoGetRequest(urlPathStr, &iofogs)
-
-	if err != nil {
-		log.G(rootContext).Warn("unable to get ioFog nodes: ", err)
-		return nil
+		return []client.AgentInfo{}
 	} else {
-		return iofogs.Fogs
+		return agents.Agents
 	}
 }
 

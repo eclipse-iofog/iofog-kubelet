@@ -16,7 +16,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/eclipse-iofog/iofog-kubelet/version"
+	"github.com/eclipse-iofog/iofog-kubelet/versions"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +25,7 @@ var versionCmd = &cobra.Command{
 	Short: "Show the version of the program",
 	Long:  `Show the version of the program`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Version: %s, Built: %s", version.Version, version.BuildTime)
+		fmt.Printf("Version: %s, Built: %s\n", version.Version, version.BuildTime)
 	},
 }
 
