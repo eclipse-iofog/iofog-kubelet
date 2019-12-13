@@ -30,7 +30,7 @@ safebuild:
 .PHONY: build
 build: authors
 	@echo "Building..."
-	$Q CGO_ENABLED=0 go build -a --tags $(build_tags) -ldflags '-extldflags "-static"' -o bin/$(binary) $(if $V,-v) $(VERSION_FLAGS) $(PACKAGE)
+	$Q CGO_ENABLED=0 go build -mod=vendor -a --tags $(build_tags) -ldflags '-extldflags "-static"' -o bin/$(binary) $(if $V,-v) $(VERSION_FLAGS) $(PACKAGE)
 
 .PHONY: tags
 tags:
