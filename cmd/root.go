@@ -16,8 +16,8 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/apps"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/providers/register"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
@@ -109,7 +109,7 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 			Endpoint: controllerUrl,
 		}
 
-		controllerClient, err = client.NewWithToken(controllerUrl, controllerToken)
+		controllerClient, err = client.NewWithToken(client.Options{ Endpoint: controllerUrl }, controllerToken)
 		if err != nil {
 			log.L.WithError(err).Fatal("Error initializing controller client", err)
 		}

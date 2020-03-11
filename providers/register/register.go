@@ -15,8 +15,8 @@ package register
 
 import (
 	"github.com/cpuguy83/strongerrors"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/apps"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/client"
 	"github.com/eclipse-iofog/iofog-kubelet/manager"
 	"github.com/eclipse-iofog/iofog-kubelet/providers"
 	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
