@@ -16,7 +16,7 @@ package opencensus
 import (
 	"testing"
 
-	"github.com/eclipse-iofog/iofog-kubelet/trace"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/trace"
 )
 
 func TestTracerImplementsTracer(t *testing.T) {

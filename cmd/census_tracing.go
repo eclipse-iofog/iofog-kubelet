@@ -19,7 +19,7 @@ import (
 	"os"
 
 	"github.com/cpuguy83/strongerrors"
-	"github.com/eclipse-iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
 	"go.opencensus.io/zpages"

@@ -85,6 +85,8 @@ github.com/eclipse-iofog/iofog-go-sdk v1.3.0/go.mod h1:X9xGwzS9ySY5iqY5hpEK6mtWB
 github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-20200311045332-5eff3ba76bbc h1:aKzGLbZ8nyNiPSZQ7UPBCm2AupFPYCYrEsI/i6fb/7M=
 github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-20200311045332-5eff3ba76bbc/go.mod h1:HcfRGiV2iyYKaqcXfypi+m++nz/dbA+XUeNyMzTm7GA=
 github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-alpha h1:vZFNaQRrCQmGVO/hclPoXsEUlPVHNgU17LHqHW/P5uA=
+github.com/eclipse-iofog/iofog-kubelet v1.3.0 h1:5OkIceWb7d74xFHTyJribm3wIHpA/rFlT2WsD+rpFsM=
+github.com/eclipse-iofog/iofog-kubelet v1.3.0/go.mod h1:sZjEmrJKdJeIx0jiEpqIMaau6vu85EU4JQwyhdjXUdQ=
 github.com/elazarl/goproxy v0.0.0-20170405201442-c4fc26588b6e h1:p1yVGRW3nmb85p1Sh1ZJSDm4A4iKLS5QNbvUHMgGu/M=
 github.com/elazarl/goproxy v0.0.0-20170405201442-c4fc26588b6e/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=
 github.com/emicklei/go-restful v0.0.0-20170410110728-ff4f55a20633/go.mod h1:otzb+WCGbkyDHkqmQmT5YD2WR4BBwUdeQoFo8l/7tVs=
@@ -133,6 +135,7 @@ github.com/google/btree v0.0.0-20160524151835-7d79101e329e/go.mod h1:lNA+9X1NB3Z
 github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
 github.com/google/btree v1.0.0 h1:0udJVsspx3VBr5FwtLhQQtuAsVc79tTq0ocGIPAU6qo=
 github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
+github.com/google/go-cmp v0.2.0 h1:+dTQ8DZQJz0Mb/HjFlkptS1FeQ4cWSnN941F8aEG4SQ=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
 github.com/google/go-cmp v0.3.0 h1:crn/baboCvb5fXaQ0IJ1SGTsTVrWpDsCWC8EGETZijY=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=

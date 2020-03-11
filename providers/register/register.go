@@ -17,9 +17,9 @@ import (
 	"github.com/cpuguy83/strongerrors"
 	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/apps"
 	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/client"
-	"github.com/eclipse-iofog/iofog-kubelet/manager"
-	"github.com/eclipse-iofog/iofog-kubelet/providers"
-	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/vkubelet/api"
 	"github.com/pkg/errors"
 )
 

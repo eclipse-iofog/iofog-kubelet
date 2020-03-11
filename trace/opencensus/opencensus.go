@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/eclipse-iofog/iofog-kubelet/log"
-	"github.com/eclipse-iofog/iofog-kubelet/trace"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/trace"
 	octrace "go.opencensus.io/trace"
 )
 

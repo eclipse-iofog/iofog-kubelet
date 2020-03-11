@@ -14,8 +14,8 @@
 package register
 
 import (
-	"github.com/eclipse-iofog/iofog-kubelet/providers"
-	"github.com/eclipse-iofog/iofog-kubelet/providers/iofog"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/providers/iofog"
 )
 
 func init() {

@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/eclipse-iofog/iofog-kubelet/cmd"
+import "github.com/eclipse-iofog/iofog-kubelet/v2/cmd"
 
 func main() {
 	cmd.Execute()

@@ -15,8 +15,8 @@ package cmd
 
 import (
 	"context"
-	"github.com/eclipse-iofog/iofog-kubelet/log"
-	"github.com/eclipse-iofog/iofog-kubelet/vkubelet"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/vkubelet"
 	"github.com/pkg/errors"
 	"net"
 	"net/http"

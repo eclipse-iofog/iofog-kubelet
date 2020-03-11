@@ -21,7 +21,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	testutil "github.com/eclipse-iofog/iofog-kubelet/test/util"
+	testutil "github.com/eclipse-iofog/iofog-kubelet/v2/test/util"
 )
 
 const (

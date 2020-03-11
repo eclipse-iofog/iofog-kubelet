@@ -18,9 +18,9 @@ import (
 	"strings"
 
 	"github.com/cpuguy83/strongerrors/status/ocstatus"
-	"github.com/eclipse-iofog/iofog-kubelet/log"
-	"github.com/eclipse-iofog/iofog-kubelet/trace"
-	"github.com/eclipse-iofog/iofog-kubelet/versions"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/trace"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/versions"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

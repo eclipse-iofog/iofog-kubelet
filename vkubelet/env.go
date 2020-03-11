@@ -24,8 +24,8 @@ import (
 	apivalidation "k8s.io/apimachinery/pkg/util/validation"
 	"k8s.io/client-go/tools/record"
 
-	"github.com/eclipse-iofog/iofog-kubelet/log"
-	"github.com/eclipse-iofog/iofog-kubelet/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/manager"
 )
 
 const (

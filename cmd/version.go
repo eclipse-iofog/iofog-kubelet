@@ -16,7 +16,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/eclipse-iofog/iofog-kubelet/versions"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/versions"
 	"github.com/spf13/cobra"
 )
 

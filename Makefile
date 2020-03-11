@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 # Project variables
-PACKAGE = github.com/eclipse-iofog/iofog-kubelet
+PACKAGE = github.com/eclipse-iofog/iofog-kubelet/v2
 BINARY_NAME = iofog-kubelet
 IMAGE = iofog/iofog-kubelet
 COMMIT_HASH ?= $(shell git rev-parse --short HEAD 2>/dev/null)
@@ -226,7 +226,7 @@ PATCH            ?= 0
 SUFFIX           ?= -dev
 VERSION          := $(MAJOR).$(MINOR).$(PATCH)$(SUFFIX)
 DATE             := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
-VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/versions.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/versions.BuildTime=$(DATE)"'
+VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/v2/versions.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/v2/versions.BuildTime=$(DATE)"'
 
 # assuming go 1.9 here!!
 _allpackages = $(shell go list ./...)
