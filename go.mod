@@ -12,8 +12,7 @@ require (
 	github.com/cpuguy83/strongerrors v0.2.1
 	github.com/docker/spdystream v0.0.0-20181023171402-6480d4af844c // indirect
 	github.com/eclipse-iofog/iofog-go-sdk v1.3.0 // indirect
-	github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-20200311045332-5eff3ba76bbc
-	github.com/eclipse-iofog/iofog-kubelet v1.3.0
+	github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-beta
 	github.com/googleapis/gax-go/v2 v2.0.5 // indirect
 	github.com/gophercloud/gophercloud v0.0.0-20190126172459-c818fa66e4c8 // indirect
 	github.com/gorilla/mux v1.7.2
@@ -26,7 +25,7 @@ require (
 	github.com/spf13/cobra v0.0.4
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.4.0
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.4.0 // indirect
 	go.opencensus.io v0.20.2
 	golang.org/x/lint v0.0.0-20190409202823-959b441ac422 // indirect
 	google.golang.org/api v0.3.2 // indirect
