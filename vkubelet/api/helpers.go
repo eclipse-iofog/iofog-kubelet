@@ -18,7 +18,7 @@ import (
 	"net/http"
 
 	"github.com/cpuguy83/strongerrors/status"
-	"github.com/eclipse-iofog/iofog-kubelet/log"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
 )
 
 type handlerFunc func(http.ResponseWriter, *http.Request) error

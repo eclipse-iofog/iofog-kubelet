@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 # Project variables
-PACKAGE = github.com/eclipse-iofog/iofog-kubelet
+PACKAGE = github.com/eclipse-iofog/iofog-kubelet/v2
 BINARY_NAME = iofog-kubelet
 IMAGE = iofog/iofog-kubelet
 COMMIT_HASH ?= $(shell git rev-parse --short HEAD 2>/dev/null)
@@ -12,6 +12,13 @@ build_tags := "netgo osusergo $(VK_BUILD_TAGS)"
 BRANCH ?= $(TRAVIS_BRANCH)
 RELEASE_TAG ?= 0.0.0
 
+MAJOR ?= $(shell cat version | grep MAJOR | sed 's/MAJOR=//g')
+MINOR ?= $(shell cat version | grep MINOR | sed 's/MINOR=//g')
+PATCH ?= $(shell cat version | grep PATCH | sed 's/PATCH=//g')
+SUFFIX ?= $(shell cat version | grep SUFFIX | sed 's/SUFFIX=//g')
+VERSION = $(MAJOR).$(MINOR).$(PATCH)$(SUFFIX)
+MODULES_VERSION = $(shell [ $(SUFFIX) == "-dev" ] && echo develop || echo v$(VERSION))
+
 # comment this line out for quieter things
 #V := 1 # When V is set, print commands and build progress.
 
@@ -20,6 +27,19 @@ IGNORED_PACKAGES := /vendor/
 
 .PHONY: all
 all: test build
+
+.PHONY: modules
+modules: get vendor ## Get modules and vendor them
+
+.PHONY: get
+get: ## Pull modules
+	@for module in iofog-go-sdk/v2; do \
+		go get github.com/eclipse-iofog/$$module@$(MODULES_VERSION); \
+	done
+
+.PHONY: vendor
+vendor: # Vendor all modules
+	@go mod vendor
 
 .PHONY: safebuild
 # safebuild builds inside a docker container with no clingons from your $GOPATH
@@ -206,7 +226,7 @@ PATCH            ?= 0
 SUFFIX           ?= -dev
 VERSION          := $(MAJOR).$(MINOR).$(PATCH)$(SUFFIX)
 DATE             := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
-VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/versions.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/versions.BuildTime=$(DATE)"'
+VERSION_FLAGS    := -ldflags='-X "github.com/eclipse-iofog/iofog-kubelet/v2/versions.Version=$(VERSION)" -X "github.com/eclipse-iofog/iofog-kubelet/v2/versions.BuildTime=$(DATE)"'
 
 # assuming go 1.9 here!!
 _allpackages = $(shell go list ./...)

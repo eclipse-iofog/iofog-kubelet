@@ -16,11 +16,11 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/apps"
-	"github.com/eclipse-iofog/iofog-go-sdk/pkg/client"
-	"github.com/eclipse-iofog/iofog-kubelet/providers/register"
-	"github.com/eclipse-iofog/iofog-kubelet/vkubelet"
-	"github.com/eclipse-iofog/iofog-kubelet/vkubelet/api"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/apps"
+	"github.com/eclipse-iofog/iofog-go-sdk/v2/pkg/client"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/providers/register"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/vkubelet"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/vkubelet/api"
 	"k8s.io/apimachinery/pkg/fields"
 	"os"
 	"os/signal"
@@ -32,12 +32,12 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/eclipse-iofog/iofog-kubelet/log"
-	logruslogger "github.com/eclipse-iofog/iofog-kubelet/log/logrus"
-	"github.com/eclipse-iofog/iofog-kubelet/manager"
-	"github.com/eclipse-iofog/iofog-kubelet/providers"
-	"github.com/eclipse-iofog/iofog-kubelet/trace"
-	"github.com/eclipse-iofog/iofog-kubelet/trace/opencensus"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/log"
+	logruslogger "github.com/eclipse-iofog/iofog-kubelet/v2/log/logrus"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/manager"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/providers"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/trace"
+	"github.com/eclipse-iofog/iofog-kubelet/v2/trace/opencensus"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -109,7 +109,7 @@ This allows users to schedule kubernetes workloads on nodes that aren't running 
 			Endpoint: controllerUrl,
 		}
 
-		controllerClient, err = client.NewWithToken(controllerUrl, controllerToken)
+		controllerClient, err = client.NewWithToken(client.Options{ Endpoint: controllerUrl }, controllerToken)
 		if err != nil {
 			log.L.WithError(err).Fatal("Error initializing controller client", err)
 		}
