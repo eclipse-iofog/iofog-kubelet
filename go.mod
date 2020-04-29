@@ -11,7 +11,7 @@ require (
 	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
 	github.com/cpuguy83/strongerrors v0.2.1
 	github.com/docker/spdystream v0.0.0-20181023171402-6480d4af844c // indirect
-	github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-beta
+	github.com/eclipse-iofog/iofog-go-sdk/v2 v2.0.0-rc1
 	github.com/googleapis/gax-go/v2 v2.0.5 // indirect
 	github.com/gophercloud/gophercloud v0.0.0-20190126172459-c818fa66e4c8 // indirect
 	github.com/gorilla/mux v1.7.2

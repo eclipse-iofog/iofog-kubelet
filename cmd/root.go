@@ -444,7 +444,7 @@ func initConfig() {
 }
 
 func getIOFogNodes() []client.AgentInfo {
-	if agents, err := controllerClient.ListAgents(); err != nil {
+	if agents, err := controllerClient.ListAgents(client.ListAgentsRequest{}); err != nil {
 		log.G(rootContext).Fatal(err)
 		return []client.AgentInfo{}
 	} else {
